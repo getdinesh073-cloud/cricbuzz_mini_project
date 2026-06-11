@@ -26,14 +26,59 @@ VALID_DB_TYPES = ["sqlite", "postgresql", "mysql"]
 if DB_TYPE not in VALID_DB_TYPES:
     raise ValueError(f"DB_TYPE must be one of {VALID_DB_TYPES}, got {DB_TYPE}")
 
-# ==================== API Configuration ====================
-CRICBUZZ_API_BASE_URL = os.getenv(
-    "CRICBUZZ_API_BASE_URL", 
-    "https://api.cricbuzz.com/v1"
-)
-CRICBUZZ_API_KEY = os.getenv("CRICBUZZ_API_KEY", "")
+# ==================== API Configuration (RapidAPI - Cricbuzz Cricket) ====================
+# Using RapidAPI endpoint: https://rapidapi.com/api-sports/api/cricbuzz-cricket
+CRICBUZZ_API_BASE_URL = "https://cricbuzz-cricket.p.rapidapi.com"
+CRICBUZZ_API_KEY = os.getenv("RAPIDAPI_KEY", "")
+CRICBUZZ_API_HOST = os.getenv("RAPIDAPI_HOST", "cricbuzz-cricket.p.rapidapi.com")
 API_TIMEOUT = int(os.getenv("API_TIMEOUT", "10"))
 API_RETRY_COUNT = int(os.getenv("API_RETRY_COUNT", "3"))
+
+# API Endpoints
+API_ENDPOINTS = {
+    # Match endpoints
+    "live_matches": "/matches/v1/live",
+    "upcoming_matches": "/matches/v1/upcoming",
+    "recent_matches": "/matches/v1/recent",
+    "match_center": "/mcenter/v1/{match_id}",
+    "match_scorecard": "/mcenter/v1/{match_id}/scard",
+    "match_high_scorecard": "/mcenter/v1/{match_id}/hscard",
+    "match_overs": "/mcenter/v1/{match_id}/overs",
+    "match_team_data": "/mcenter/v1/{match_id}/team/{team_id}",
+    
+    # Series endpoints
+    "international_series": "/series/v1/international",
+    "series_archives": "/series/v1/archives/international",
+    "series_details": "/series/v1/{series_id}",
+    "series_squads": "/series/v1/{series_id}/squads",
+    "series_squad_players": "/series/v1/{series_id}/squads/{team_id}",
+    "series_venues": "/series/v1/{series_id}/venues",
+    "series_points_table": "/stats/v1/series/{series_id}/points-table",
+    "series_stats": "/stats/v1/series/{series_id}",
+    
+    # Team endpoints
+    "international_teams": "/teams/v1/international",
+    "team_schedule": "/teams/v1/{team_id}/schedule",
+    "team_results": "/teams/v1/{team_id}/results",
+    "team_players": "/teams/v1/{team_id}/players",
+    "team_stats": "/stats/v1/team/{team_id}",
+    
+    # Player endpoints
+    "player_trending": "/stats/v1/player/trending",
+    "player_career": "/stats/v1/player/{player_id}/career",
+    "player_bowling": "/stats/v1/player/{player_id}/bowling",
+    "player_batting": "/stats/v1/player/{player_id}/batting",
+    "player_search": "/stats/v1/player/search",
+    
+    # Rankings and standings
+    "batting_rankings": "/stats/v1/rankings/batsmen",
+    "bowling_rankings": "/stats/v1/rankings/bowlers",
+    "icc_standing": "/stats/v1/iccstanding/team/matchtype/{matchtype}",
+    
+    # Top stats
+    "top_stats": "/stats/v1/topstats",
+    "top_stats_category": "/stats/v1/topstats/{category}",
+}
 
 # ==================== Streamlit Configuration ====================
 PAGE_TITLE = "🏏 Cricbuzz LiveStats"
@@ -107,8 +152,10 @@ CONFIG = {
     "api": {
         "base_url": CRICBUZZ_API_BASE_URL,
         "api_key": CRICBUZZ_API_KEY,
+        "api_host": CRICBUZZ_API_HOST,
         "timeout": API_TIMEOUT,
         "retry_count": API_RETRY_COUNT,
+        "endpoints": API_ENDPOINTS,
     },
     "streamlit": {
         "page_title": PAGE_TITLE,
